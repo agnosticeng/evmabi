@@ -1,0 +1,153 @@
+[
+    {
+        "fullsig": "Transfer(indexed address,indexed address,uint256)",
+        "field": [
+            {
+                "inputs": [
+                    {
+                        "indexed": true,
+                        "name": "arg0",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": true,
+                        "name": "arg1",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "name": "arg2",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "Transfer",
+                "type": "event"
+            }
+        ]   
+    },
+    {
+        "fullsig": "OrderFulfilled(bytes32,indexed address,indexed address,address,(uint8,address,uint256,uint256)[],(uint8,address,uint256,uint256,address)[])",
+        "field": [ 
+            {
+                "inputs":[
+                    {
+                        "indexed":false,
+                        "name":"arg0",
+                        "type":"bytes32"
+                    },
+                    {
+                        "indexed":true,
+                        "name":"arg1",
+                        "type":"address"
+                    },
+                    {
+                        "indexed":true,
+                        "name":"arg2",
+                        "type":"address"
+                    },
+                    {
+                        "indexed":false,
+                        "internalType":"address",
+                        "name": "arg3",
+                        "type":"address"
+                    },
+                    {
+                        "components":[
+                            {
+                                "name":"arg0",
+                                "type":"uint8"
+                            },
+                            {
+                                "name":"arg1",
+                                "type":"address"
+                            },
+                            {
+                                "name":"arg2",
+                                "type":"uint256"
+                            },
+                            {
+                                "name":"arg3",
+                                "type":"uint256"
+                            }
+                        ],
+                        "indexed":false,
+                        "name":"arg4",
+                        "type":"tuple[]"
+                    },
+                    {
+                        "components":[
+                            {
+                                "name":"arg0",
+                                "type":"uint8"
+                            },
+                            {
+                                "name":"arg1",
+                                "type":"address"
+                            },
+                            {
+                                "name":"arg2",
+                                "type":"uint256"
+                            },
+                            {
+                                "name":"arg3",
+                                "type":"uint256"
+                            },
+                            {
+                                "name":"arg4",
+                                "type":"address"
+                            }
+                        ],
+                        "indexed":false,
+                        "name":"arg5",
+                        "type":"tuple[]"
+                    }
+                ],
+                "name":"OrderFulfilled",
+                "type":"event"
+            }
+        ]
+    },
+    {
+        "fullsig": "onFlashLoan(address,address,uint256,uint256,bytes)(bytes32)",
+        "field": [
+            {
+                "type": "function",
+                "name": "onFlashLoan",
+                "inputs": [
+                    {
+                        "name": "arg0",
+                        "type": "address",
+                        "indexed": false
+                    },
+                    {
+                        "name": "arg1",
+                        "type": "address",
+                        "indexed": false
+                    },
+                    {
+                        "name": "arg2",
+                        "type": "uint256",
+                        "indexed": false
+                    },
+                    {
+                        "name": "arg3",
+                        "type": "uint256",
+                        "indexed": false
+                    },
+                    {
+                        "name": "arg4",
+                        "type": "bytes",
+                        "indexed": false
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "arg0",
+                        "type": "bytes32",
+                        "indexed": false
+                    }
+                ]
+            }
+        ]
+    }
+]

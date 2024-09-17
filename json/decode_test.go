@@ -78,7 +78,7 @@ func TestDecodeLog(t *testing.T) {
 				topics = lo.Map(log.Topics, func(topic string, _ int) []byte { return hexutil.MustDecode(topic) })
 			)
 
-			node, err := DecodeLog(input, topics, event)
+			node, err := DecodeLog(topics, input, event)
 			assert.NoError(t, err)
 			js, err := node.MarshalJSON()
 			assert.NoError(t, err)
