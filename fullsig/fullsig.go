@@ -159,6 +159,10 @@ func parseTuple(tokenizer *stringtokenizer.StringTokenizer) (eth_abi.ArgumentMar
 			return zero, err
 		}
 
+		if arg == nil {
+			break
+		}
+
 		arg.Name = fmt.Sprintf("arg%d", i)
 
 		t, err := readToken(tokenizer)
@@ -187,7 +191,7 @@ func parseTuple(tokenizer *stringtokenizer.StringTokenizer) (eth_abi.ArgumentMar
 			}
 		}
 
-		res.Components = append(res.Components, arg)
+		res.Components = append(res.Components, *arg)
 
 		if t == ")" {
 			break
@@ -204,7 +208,7 @@ func parseTuple(tokenizer *stringtokenizer.StringTokenizer) (eth_abi.ArgumentMar
 	return res, nil
 }
 
-func parseItem(tokenizer *stringtokenizer.StringTokenizer) (eth_abi.ArgumentMarshaling, error) {
+func parseItem(tokenizer *stringtokenizer.StringTokenizer) (*eth_abi.ArgumentMarshaling, error) {
 	var (
 		res eth_abi.ArgumentMarshaling
 		err error
@@ -213,7 +217,7 @@ func parseItem(tokenizer *stringtokenizer.StringTokenizer) (eth_abi.ArgumentMars
 	t, err := readToken(tokenizer)
 
 	if err != nil {
-		return zero, err
+		return nil, err
 	}
 
 	t, found := strings.CutPrefix(t, "indexed")
@@ -240,19 +244,22 @@ func parseItem(tokenizer *stringtokenizer.StringTokenizer) (eth_abi.ArgumentMars
 	case t == "(":
 		res, err = parseTuple(tokenizer)
 
+	case t == ")":
+		return nil, nil
+
 	default:
-		return zero, fmt.Errorf("unattended token: %s", t)
+		return nil, fmt.Errorf("unattended token: %s", t)
 	}
 
 	if err != nil {
-		return zero, err
+		return nil, err
 	}
 
 	if found {
 		res.Indexed = true
 	}
 
-	return res, nil
+	return &res, nil
 }
 
 func readArrayLength(tokenizer *stringtokenizer.StringTokenizer) (int, error) {

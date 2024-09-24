@@ -1,4 +1,20 @@
-[
+[   
+    {
+        "fullsig": "symbol()(string)",
+        "field": [
+            {
+                "outputs": [
+                    {
+                        "name": "arg0",
+                        "type": "string",
+                        "indexed": false
+                    }
+                ],
+                "name": "symbol",
+                "type": "function"
+            }
+        ]   
+    },
     {
         "fullsig": "Transfer(indexed address,indexed address,uint256)",
         "field": [
