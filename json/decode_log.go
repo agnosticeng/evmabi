@@ -12,7 +12,7 @@ func DecodeLog(topics [][]byte, input []byte, event eth_abi.Event) (ast.Node, er
 
 	// mismatch btw num of indexed fields and num of topics
 	if len(indexed) != (len(topics) - 1) {
-		return ast.Node{}, fmt.Errorf("event has %d indexed inputs but log has %d topics", len(indexed), (len(topics) - 1))
+		return ast.Node{}, fmt.Errorf("event has %d indexed inputs but log has %d topics", len(indexed), len(topics))
 	}
 
 	// log has data but abi field does not have unindexed fields

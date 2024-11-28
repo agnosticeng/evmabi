@@ -8,6 +8,10 @@ import (
 )
 
 func DecodeTrace(input []byte, output []byte, method eth_abi.Method) (ast.Node, error) {
+	if len(input) < 4 {
+		return ast.Node{}, fmt.Errorf("trace input is smaller than 4 bytes")
+	}
+
 	if len(method.Outputs) == 0 && len(output) > 0 {
 		return ast.Node{}, fmt.Errorf("trace has output data but method has no outputs")
 	}
