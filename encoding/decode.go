@@ -1,4 +1,4 @@
-package evmabi
+package encoding
 
 import (
 	"encoding/binary"
@@ -124,8 +124,8 @@ func decodeValue(
 	case eth_abi.IntTy:
 		var i = uint256.NewInt(0).SetBytes(returnOutput)
 
-		if i.BitLen() > t.Size {
-			return fmt.Errorf("int needs too many bits (%d/%d)", i.BitLen(), t.Size)
+		if i.Sign() == -1 && uint256.NewInt(0).Neg(i).BitLen() > t.Size {
+			return fmt.Errorf("int needs too many bits (%d/%d)", uint256.NewInt(0).Neg(i).BitLen(), t.Size)
 		}
 
 		return Yield(fn, &Event{
@@ -201,6 +201,10 @@ func decodeValue(
 
 			if overflow {
 				return fmt.Errorf("offset larger than uint64")
+			}
+
+			if offset > uint64(len(data)) {
+				return fmt.Errorf("offset greater than data length")
 			}
 
 			return decodeTuple(data[offset:], t, fn)

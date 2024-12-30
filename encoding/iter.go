@@ -1,8 +1,10 @@
-package evmabi
+package encoding
 
 import (
 	"errors"
 	"iter"
+
+	"github.com/agnosticeng/panicsafe"
 
 	eth_abi "github.com/ethereum/go-ethereum/accounts/abi"
 )
@@ -39,7 +41,9 @@ func Yield(fn YieldFunc, evt *Event) error {
 
 func DecodeArguments(data []byte, args eth_abi.Arguments) iter.Seq2[*Event, error] {
 	return func(yield func(*Event, error) bool) {
-		var err = decodeArguments(data, args, yield)
+		var err = panicsafe.Func(func() error {
+			return decodeArguments(data, args, yield)
+		})()
 
 		if err == nil || errors.Is(err, ErrIterStop) {
 			return
@@ -51,7 +55,9 @@ func DecodeArguments(data []byte, args eth_abi.Arguments) iter.Seq2[*Event, erro
 
 func DecodeValue(data []byte, t eth_abi.Type) iter.Seq2[*Event, error] {
 	return func(yield func(*Event, error) bool) {
-		var err = decodeValue(data, t, 0, yield)
+		var err = panicsafe.Func(func() error {
+			return decodeValue(data, t, 0, yield)
+		})()
 
 		if err == nil || errors.Is(err, ErrIterStop) {
 			return

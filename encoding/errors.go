@@ -1,4 +1,4 @@
-package evmabi
+package encoding
 
 import "errors"
 

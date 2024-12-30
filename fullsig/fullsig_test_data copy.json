@@ -1,6 +1,22 @@
 [   
     {
-        "fullsig": "event Transfer(address indexed,address indexed,uint256)",
+        "fullsig": "symbol()(string)",
+        "field": [
+            {
+                "outputs": [
+                    {
+                        "name": "arg0",
+                        "type": "string",
+                        "indexed": false
+                    }
+                ],
+                "name": "symbol",
+                "type": "function"
+            }
+        ]   
+    },
+    {
+        "fullsig": "Transfer(indexed address,indexed address,uint256)",
         "field": [
             {
                 "inputs": [
@@ -26,23 +42,7 @@
         ]   
     },
     {
-        "fullsig": "function symbol()(string)",
-        "field": [
-            {
-                "outputs": [
-                    {
-                        "name": "arg0",
-                        "type": "string",
-                        "indexed": false
-                    }
-                ],
-                "name": "symbol",
-                "type": "function"
-            }
-        ]   
-    },
-    {
-        "fullsig": "event OrderFulfilled(bytes32,address indexed,address indexed,address,(uint8,address,uint256,uint256)[],(uint8,address,uint256,uint256,address)[])",
+        "fullsig": "OrderFulfilled(bytes32,indexed address,indexed address,address,(uint8,address,uint256,uint256)[],(uint8,address,uint256,uint256,address)[])",
         "field": [ 
             {
                 "inputs":[
@@ -124,7 +124,7 @@
         ]
     },
     {
-        "fullsig": "function onFlashLoan(address,address,uint256,uint256,bytes)(bytes32)",
+        "fullsig": "onFlashLoan(address,address,uint256,uint256,bytes)(bytes32)",
         "field": [
             {
                 "type": "function",
@@ -167,7 +167,7 @@
         ]
     },
     {
-        "fullsig": "event FulfilledOrder(((address,uint256)[],(address,uint256)[],(address,uint256,bytes),address,address) indexed,address indexed,address indexed)",
+        "fullsig": "event FulfilledOrder(indexed ((address,uint256)[],(address,uint256)[],(address,uint256,bytes),address,address),indexed address,indexed address)",
         "field": [
             {
                 "type":"event",
@@ -249,7 +249,7 @@
         ]
     },
     {
-        "fullsig": "event Deposit(address indexed,address[] indexed,uint256[][] indexed,address)",
+        "fullsig": "event Deposit(indexed address,indexed address[],indexed uint256[][],address)",
         "field": [
             {
                 "type":"event",

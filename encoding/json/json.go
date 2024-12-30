@@ -5,17 +5,19 @@ import (
 	"fmt"
 	"iter"
 
-	"github.com/agnosticeng/evmabi"
+	"github.com/agnosticeng/evmabi/encoding"
 	"github.com/bytedance/sonic/ast"
 	eth_abi "github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/holiman/uint256"
 )
 
 var ErrEndOfSeq = errors.New("end of seq")
 
 func DecodeArguments(data []byte, args eth_abi.Arguments) (ast.Node, error) {
 	var (
-		it         = evmabi.DecodeArguments(data, args)
-		next, stop = iter.Pull2[*evmabi.Event, error](it)
+		it         = encoding.DecodeArguments(data, args)
+		next, stop = iter.Pull2[*encoding.Event, error](it)
 	)
 
 	defer stop()
@@ -24,15 +26,15 @@ func DecodeArguments(data []byte, args eth_abi.Arguments) (ast.Node, error) {
 
 func DecodeValue(data []byte, t eth_abi.Type) (ast.Node, error) {
 	var (
-		it         = evmabi.DecodeValue(data, t)
-		next, stop = iter.Pull2[*evmabi.Event, error](it)
+		it         = encoding.DecodeValue(data, t)
+		next, stop = iter.Pull2[*encoding.Event, error](it)
 	)
 
 	defer stop()
 	return ReadValue(next)
 }
 
-func ReadTuple(next func() (*evmabi.Event, error, bool), length int) (ast.Node, error) {
+func ReadTuple(next func() (*encoding.Event, error, bool), length int) (ast.Node, error) {
 	var pairs []ast.Pair
 
 	for i := 0; i < length; i++ {
@@ -57,7 +59,7 @@ func ReadTuple(next func() (*evmabi.Event, error, bool), length int) (ast.Node, 
 		return ast.Node{}, err
 	}
 
-	if evt.Type != evmabi.TupleEnd {
+	if evt.Type != encoding.TupleEnd {
 		return ast.Node{}, fmt.Errorf("wrong event type; wanted ArrayEnd but got %s", evt.Type)
 	}
 
@@ -65,7 +67,7 @@ func ReadTuple(next func() (*evmabi.Event, error, bool), length int) (ast.Node, 
 
 }
 
-func ReadArray(next func() (*evmabi.Event, error, bool), length int) (ast.Node, error) {
+func ReadArray(next func() (*encoding.Event, error, bool), length int) (ast.Node, error) {
 	var nodes []ast.Node
 
 	for i := 0; i < length; i++ {
@@ -84,28 +86,28 @@ func ReadArray(next func() (*evmabi.Event, error, bool), length int) (ast.Node, 
 		return ast.Node{}, err
 	}
 
-	if evt.Type != evmabi.ArrayEnd {
+	if evt.Type != encoding.ArrayEnd {
 		return ast.Node{}, fmt.Errorf("wrong event type; wanted ArrayEnd but got %s", evt.Type)
 	}
 
 	return ast.NewArray(nodes), nil
 }
 
-func ReadKey(next func() (*evmabi.Event, error, bool)) (string, error) {
+func ReadKey(next func() (*encoding.Event, error, bool)) (string, error) {
 	var evt, err = pullEvent(next)
 
 	if err != nil {
 		return "", err
 	}
 
-	if evt.Type != evmabi.Key {
+	if evt.Type != encoding.Key {
 		return "", fmt.Errorf("wrong event type; wanted Key but got %s", evt.Type)
 	}
 
 	return evt.Key, nil
 }
 
-func ReadValue(next func() (*evmabi.Event, error, bool)) (ast.Node, error) {
+func ReadValue(next func() (*encoding.Event, error, bool)) (ast.Node, error) {
 	var evt, err = pullEvent(next)
 
 	if err != nil {
@@ -113,18 +115,33 @@ func ReadValue(next func() (*evmabi.Event, error, bool)) (ast.Node, error) {
 	}
 
 	switch evt.Type {
-	case evmabi.Value:
-		return ast.NewAny(evt.Value), nil
-	case evmabi.TupleStart:
+	case encoding.Value:
+		switch evt.ABIType.T {
+		case eth_abi.BytesTy, eth_abi.FixedBytesTy:
+			return ast.NewAny(hexutil.Bytes(evt.Value.([]byte))), nil
+
+		case eth_abi.IntTy:
+			var i = evt.Value.(*uint256.Int)
+
+			if i.Sign() == -1 {
+				return ast.NewAny(fmt.Sprintf("-%d", uint256.NewInt(0).Neg(i))), nil
+			}
+
+			return ast.NewAny(evt.Value), nil
+
+		default:
+			return ast.NewAny(evt.Value), nil
+		}
+	case encoding.TupleStart:
 		return ReadTuple(next, evt.Len)
-	case evmabi.ArrayStart:
+	case encoding.ArrayStart:
 		return ReadArray(next, evt.Len)
 	default:
 		return ast.Node{}, fmt.Errorf("wrong event type; wanted Value|TupleStart|ArrayStart but got %s", evt.Type)
 	}
 }
 
-func pullEvent(next func() (*evmabi.Event, error, bool)) (*evmabi.Event, error) {
+func pullEvent(next func() (*encoding.Event, error, bool)) (*encoding.Event, error) {
 	var evt, err, ok = next()
 
 	if !ok {

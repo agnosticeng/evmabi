@@ -1,4 +1,4 @@
-package evmabi
+package encoding
 
 import (
 	"fmt"
@@ -70,7 +70,7 @@ func isDynamic(t eth_abi.Type) bool {
 		return isDynamic(*t.Elem)
 
 	case eth_abi.HashTy, eth_abi.AddressTy, eth_abi.BoolTy, eth_abi.IntTy, eth_abi.UintTy, eth_abi.FixedBytesTy:
-		return true
+		return false
 
 	default:
 		panic(fmt.Sprintf("cannot determine if this type is dynamic: %v", t.String()))

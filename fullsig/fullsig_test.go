@@ -25,7 +25,8 @@ type fullsigTestDataItem struct {
 func init() {
 	lo.Must0(json.Unmarshal(fullsigTestDataJSON, &fullsigTestData))
 }
-func TestFullsig(t *testing.T) {
+
+func TestParse(t *testing.T) {
 	for _, item := range fullsigTestData {
 		t.Run(item.Fullsig, func(t *testing.T) {
 			var _abi, err = abi.JSON(bytes.NewReader(item.Field))
@@ -41,6 +42,31 @@ func TestFullsig(t *testing.T) {
 				res, err := ParseMethod(item.Fullsig)
 				assert.NoError(t, err)
 				assert.Equal(t, meth, res)
+			}
+		})
+	}
+}
+
+func TestStringify(t *testing.T) {
+	for _, item := range fullsigTestData {
+		t.Run(item.Fullsig, func(t *testing.T) {
+			var _abi, err = abi.JSON(bytes.NewReader(item.Field))
+			assert.NoError(t, err)
+
+			if len(_abi.Events) > 0 {
+				var (
+					evt = lo.Values(_abi.Events)[0]
+					res = StringifyEvent(&evt)
+				)
+
+				assert.Equal(t, item.Fullsig, res)
+			} else {
+				var (
+					meth = lo.Values(_abi.Methods)[0]
+					res  = StringifyMethod(&meth)
+				)
+
+				assert.Equal(t, item.Fullsig, res)
 			}
 		})
 	}

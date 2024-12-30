@@ -12,10 +12,11 @@ require (
 )
 
 require (
+	github.com/agnosticeng/panicsafe v0.5.0 // indirect
 	github.com/bool64/shared v0.1.5 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4 // indirect
 	github.com/bytedance/sonic/loader v0.2.0 // indirect
-	github.com/bzick/tokenizer v1.4.0 // indirect
+	github.com/bzick/tokenizer v1.4.7 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
