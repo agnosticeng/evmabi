@@ -278,5 +278,26 @@
                 ]
             }
         ]
+    },
+    {
+        "fullsig": "event event_withdraw(address,uint256)",
+        "field": [
+            {
+                "type": "event",
+                "name": "event_withdraw",
+                "inputs": [
+                    {
+                        "name": "arg0",
+                        "type": "address",
+                        "indexed": false
+                    },
+                    {
+                        "name": "arg1",
+                        "type": "uint256",
+                        "indexed": false
+                    }
+                ]
+            }
+        ]
     }
 ]

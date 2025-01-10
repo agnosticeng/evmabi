@@ -11,15 +11,11 @@ import (
 )
 
 const (
-	TokenOpenParens     = 1
-	TokenCloseParens    = 2
-	TokenOpenBracket    = 3
-	TokenCloseBracket   = 4
-	TokenComma          = 5
-	TokenEvent          = 6
-	TokenFunction       = 7
-	TokenIndexed        = 8
-	TokenScalarTypeName = 9
+	TokenOpenParens   = 1
+	TokenCloseParens  = 2
+	TokenOpenBracket  = 3
+	TokenCloseBracket = 4
+	TokenComma        = 5
 )
 
 var (
@@ -49,18 +45,21 @@ var (
 		DefineTokens(TokenOpenBracket, []string{"["}).
 		DefineTokens(TokenCloseBracket, []string{"]"}).
 		DefineTokens(TokenComma, []string{","}).
-		DefineTokens(TokenEvent, []string{"event"}).
-		DefineTokens(TokenFunction, []string{"function"}).
-		DefineTokens(TokenIndexed, []string{"indexed"}).
-		DefineTokens(TokenScalarTypeName, SCALAR_TYPENAMES).
 		AllowKeywordSymbols([]rune{'_'}, []rune{'$', '_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'})
 )
+
+func isEventToken(t *tokenizer.Token) bool    { return t.IsKeyword() && t.ValueString() == "event" }
+func isFunctionToken(t *tokenizer.Token) bool { return t.IsKeyword() && t.ValueString() == "function" }
+func isIndexedToken(t *tokenizer.Token) bool  { return t.IsKeyword() && t.ValueString() == "indexed" }
+func isScalarTypeName(t *tokenizer.Token) bool {
+	return lo.Contains(SCALAR_TYPENAMES, t.ValueString())
+}
 
 func ParseEvent(s string) (eth_abi.Event, error) {
 	var stream = tknz.ParseString(s)
 	defer stream.Close()
 
-	if !stream.CurrentToken().Is(TokenEvent) {
+	if !isEventToken(stream.CurrentToken()) {
 		return eth_abi.Event{}, fmt.Errorf("event fullsig must start with keyword 'event': %s", s)
 	}
 
@@ -87,7 +86,7 @@ func ParseMethod(s string) (eth_abi.Method, error) {
 	var stream = tknz.ParseString(s)
 	defer stream.Close()
 
-	if !stream.CurrentToken().Is(TokenFunction) {
+	if !isFunctionToken(stream.CurrentToken()) {
 		return eth_abi.Method{}, fmt.Errorf("function fullsig must start with keyword 'function': %s", s)
 	}
 
@@ -160,7 +159,7 @@ func parseArgument(stream *tokenizer.Stream) (eth_abi.ArgumentMarshaling, error)
 	)
 
 	switch {
-	case stream.CurrentToken().Is(TokenScalarTypeName):
+	case isScalarTypeName(stream.CurrentToken()):
 		res.Type = stream.CurrentToken().ValueString()
 		stream.GoNext()
 	case stream.CurrentToken().Is(TokenOpenParens):
@@ -184,7 +183,7 @@ func parseArgument(stream *tokenizer.Stream) (eth_abi.ArgumentMarshaling, error)
 		res.Type = res.Type + s
 	}
 
-	if stream.CurrentToken().Is(TokenIndexed) {
+	if isIndexedToken(stream.CurrentToken()) {
 		res.Indexed = true
 		stream.GoNext()
 	}
