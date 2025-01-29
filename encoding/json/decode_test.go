@@ -75,7 +75,7 @@ func TestDecodeLog(t *testing.T) {
 			var (
 				event  = _abi.Events[log.EventName]
 				input  = hexutil.MustDecode(log.Input)
-				topics = lo.Map(log.Topics, func(topic string, _ int) []byte { return hexutil.MustDecode(topic) })
+				topics = lo.Map(log.Topics, func(topic string, _ int) [32]byte { return [32]byte(hexutil.MustDecode(topic)) })
 			)
 
 			node, err := DecodeLog(topics, input, event)

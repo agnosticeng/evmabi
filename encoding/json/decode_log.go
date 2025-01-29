@@ -7,7 +7,7 @@ import (
 	eth_abi "github.com/ethereum/go-ethereum/accounts/abi"
 )
 
-func DecodeLog(topics [][]byte, input []byte, event eth_abi.Event) (ast.Node, error) {
+func DecodeLog(topics [][32]byte, input []byte, event eth_abi.Event) (ast.Node, error) {
 	var indexed, unindexed = SplitInputs(event.Inputs)
 
 	// mismatch btw num of indexed fields and num of topics
@@ -37,7 +37,7 @@ func DecodeLog(topics [][]byte, input []byte, event eth_abi.Event) (ast.Node, er
 	}
 
 	for i, input := range indexed {
-		v, err := DecodeValue(topics[i+1], input.Type)
+		v, err := DecodeValue(topics[i+1][:], input.Type)
 
 		if err != nil {
 			return ast.Node{}, err
