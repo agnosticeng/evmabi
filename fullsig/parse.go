@@ -45,7 +45,7 @@ var (
 		DefineTokens(TokenOpenBracket, []string{"["}).
 		DefineTokens(TokenCloseBracket, []string{"]"}).
 		DefineTokens(TokenComma, []string{","}).
-		AllowKeywordSymbols([]rune{'_'}, []rune{'$', '_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'})
+		AllowKeywordSymbols([]rune{'_', '$'}, []rune{'$', '_', '$', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'})
 )
 
 func isEventToken(t *tokenizer.Token) bool    { return t.IsKeyword() && t.ValueString() == "event" }

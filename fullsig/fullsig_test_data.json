@@ -299,5 +299,26 @@
                 ]
             }
         ]
+    },
+    {
+        "fullsig": "function $_$$$_$$$$$_$_$____$$$$_$$_$__(address)(uint256)",
+        "field": [
+            {
+                "type": "function",
+                "name": "$_$$$_$$$$$_$_$____$$$$_$$_$__",
+                "inputs": [
+                    {
+                        "name": "arg0",
+                        "type": "address"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "arg0",
+                        "type": "uint256"
+                    }
+                ]
+            }
+        ]
     }
 ]
